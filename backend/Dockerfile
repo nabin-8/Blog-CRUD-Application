@@ -1,17 +1,18 @@
-# Step 1: Use an official Python image as the base
-FROM python:3.10
+FROM python:3.11
 
-# Step 2: Set the working directory inside the container
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# Step 3: Copy project files into the container
-COPY . /app
+COPY  requirements.txt .
 
-# Step 4: Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
 
-# Step 5: Expose the port Django runs on
+RUN pip install -r requirements.txt
+
+COPY . .
+
 EXPOSE 8000
 
-# Step 6: Run migrations and start the Django server
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
