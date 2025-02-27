@@ -13,7 +13,7 @@ class PublicBlogView(viewsets.ReadOnlyModelViewSet):
     queryset = Blog.objects.all().order_by("?")
     serializer_class = BlogSerializer
     pagination_class = PageNumberPagination   
-    pagination_class.page_size = 1
+    pagination_class.page_size = 2
 
     def get_queryset(self):
         blogs = self.queryset
@@ -23,6 +23,7 @@ class PublicBlogView(viewsets.ReadOnlyModelViewSet):
             blogs = blogs.filter(Q(title__icontains=search) | Q(blog_text__icontains=search))
 
         return blogs
+
 
 class BlogView(APIView):
     permission_classes = [IsAuthenticated]
@@ -57,7 +58,8 @@ class BlogView(APIView):
                     "message": f"Something went wrong: {str(e)}"
                 }, status=status.HTTP_400_BAD_REQUEST
             )
-        
+    
+    
     def get(self, request):
         try:
             blogs = Blog.objects.filter(user = request.user)
@@ -80,17 +82,18 @@ class BlogView(APIView):
                     "message": f"Something went wrong: {str(e)}"
                 }, status=status.HTTP_400_BAD_REQUEST
             )
-        
+    
+    
     def patch(self,request):
         try:
             data = request.data
-            blog = Blog.objects.filter(uid = data.get("uid"))
+            blog = Blog.objects.filter(id = data.get("id"))
             
             if not blog.exists():
                 return Response(
                 {
                     "data": {},
-                    "message": "Invalid Blog uid"
+                    "message": "Invalid Blog id"
                 }, status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -125,17 +128,18 @@ class BlogView(APIView):
                     "message": f"Something went wrong: {str(e)}"
                 }, status=status.HTTP_400_BAD_REQUEST
             )
-        
+    
+    
     def delete(self,request):
         try:
             data = request.data
-            blog = Blog.objects.filter(uid = data.get("uid"))
+            blog = Blog.objects.filter(id = data.get("id"))
             
             if not blog.exists():
                 return Response(
                 {
                     "data": {},
-                    "message": "Invalid Blog uid"
+                    "message": "Invalid Blog id"
                 }, status=status.HTTP_400_BAD_REQUEST
             )
 
