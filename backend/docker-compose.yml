@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: blog_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  # Syncs local project with the container
+      - sqlite_data:/app/db.sqlite3  # Persists SQLite database file
+
+volumes:
+  sqlite_data:
